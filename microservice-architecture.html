@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogisticsConnect Microservices Architecture</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+            margin: 0;
+        }
+        .diagram-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 900px;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        .box {
+            background-color: #ffffff;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 260px;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+        }
+        .api-gateway {
+            background-color: #e3f2fd;
+            border-color: #1e88e5;
+            width: 400px;
+            margin-bottom: 20px;
+        }
+        .db {
+            background-color: #fff8e1;
+            border-color: #ffb300;
+            border-radius: 50% / 20%;
+            padding: 30px 20px;
+        }
+        .broker {
+            background-color: #f5f5f5;
+            border-color: #757575;
+            border-style: dashed;
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 45%;
+        }
+        .arrow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: -5px 0;
+            z-index: 1;
+        }
+        .arrow-line {
+            width: 2px;
+            height: 40px;
+            background-color: #adb5bd;
+        }
+        .arrow-head {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid #adb5bd;
+        }
+        .label {
+            font-size: 13px;
+            color: #495057;
+            background: #f8f9fa;
+            padding: 4px 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            margin-bottom: -15px;
+            margin-top: 5px;
+            z-index: 3;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="diagram-container">
+        <h2>LogisticsConnect Architecture</h2>
+        
+        <div class="box api-gateway">API Gateway Service</div>
+        
+        <div class="row">
+            <!-- Synchronous Path (Left Column) -->
+            <div class="column">
+                <div class="label">Synchronous REST/JSON</div>
+                <div class="arrow-container">
+                    <div class="arrow-line" style="height: 30px;"></div>
+                    <div class="arrow-head"></div>
+                </div>
+                
+                <div class="box">Shipment Service</div>
+                
+                <div class="label">Saves Order Data</div>
+                <div class="arrow-container">
+                    <div class="arrow-line" style="height: 30px;"></div>
+                    <div class="arrow-head"></div>
+                </div>
+                
+                <div class="box db">
+                    MySQL DB 1<br>
+                    <small style="font-weight: normal; color: #555;">(shipment_db)</small>
+                </div>
+            </div>
+
+            <!-- Asynchronous Path (Right Column) -->
+            <div class="column">
+                <div class="label">Synchronous REST/JSON</div>
+                <div class="arrow-container">
+                    <div class="arrow-line" style="height: 30px;"></div>
+                    <div class="arrow-head"></div>
+                </div>
+                
+                <div class="box">Tracking Service</div>
+                
+                <div class="label">Publishes JMS Telemetry</div>
+                <div class="arrow-container">
+                    <div class="arrow-line" style="height: 30px;"></div>
+                    <div class="arrow-head"></div>
+                </div>
+                
+                <div class="box broker">ActiveMQ Broker</div>
+                
+                <div class="label">Asynchronous JMS Consumer</div>
+                <div class="arrow-container">
+                    <div class="arrow-line" style="height: 30px;"></div>
+                    <div class="arrow-head"></div>
+                </div>
+                
+                <div class="box">Notification Service</div>
+                
+                <div class="arrow-container">
+                    <div class="arrow-line" style="height: 30px;"></div>
+                    <div class="arrow-head"></div>
+                </div>
+                
+                <div class="box db">
+                    MySQL DB 2<br>
+                    <small style="font-weight: normal; color: #555;">(notification_db)</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
