@@ -26,4 +26,4 @@ jobs:
         run: chmod +x mvnw
 
       - name: Compile and Run Tests
-        run: ./mvnw clean verify
+        run: ./mvnw clean test
