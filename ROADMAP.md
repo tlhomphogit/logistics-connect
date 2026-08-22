@@ -15,8 +15,8 @@ Build a microservices-based logistics tracking application fulfilling the System
 - [x] Set up the multi-module Spring Boot project structure in IntelliJ IDEA.
 - [x] Initialize Git repository and `ROADMAP.md`.
 - [x] Create `.gitignore` to exclude IDE files, compiled code, and `.env` files.
-- [ ] Create a `.env` file for secure local environment variables (e.g., `MYSQL_ROOT_PASSWORD`, `ACTIVEMQ_PASSWORD`).
-- [ ] Create `docker-compose.yml` to set up the MySQL Database and ActiveMQ Artemis broker, injecting variables from `.env`.
+- [x] Create a `.env` file for secure local environment variables (e.g., `MYSQL_ROOT_PASSWORD`, `ACTIVEMQ_PASSWORD`).
+- [x] Create `docker-compose.yml` to set up the MySQL Database and ActiveMQ Artemis broker, injecting variables from `.env`.
 - [ ] Configure the CI/CD pipeline file to run automated tests on push.
 
 ### Phase 2: Synchronous REST Services (Shipment Service)
