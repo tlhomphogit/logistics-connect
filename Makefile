@@ -1,5 +1,3 @@
-# LogisticsConnect — command shortcuts
-
 DB       = logistics_db
 USER     = logistics_user
 PASSWORD = logistics_secure_password
@@ -7,7 +5,7 @@ COMPOSE  = docker compose
 EXEC     = $(COMPOSE) exec -T postgres psql -U $(USER) -d $(DB)
 MVNW     = ./mvnw
 
-.PHONY: help up down destroy psql logs status test build
+.PHONY: help up down destroy psql logs status test build run
 
 help:            ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -47,4 +45,11 @@ ifdef MODULE
 	$(MVNW) clean install -DskipTests -pl $(MODULE)
 else
 	$(MVNW) clean install -DskipTests
+endif
+
+run:             ## Run a specific Spring Boot microservice (e.g., make run MODULE=shipment-service)
+ifdef MODULE
+	$(MVNW) spring-boot:run -pl $(MODULE)
+else
+	@echo "Error: Please specify a MODULE to run. Example: make run MODULE=shipment-service"
 endif

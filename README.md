@@ -34,5 +34,8 @@ make test
 # 4. Run Tests for a Specific Microservice
 make test MODULE=shipment-service
 
-# 5. Tear Down Infrastructure
+# 5. Start a Specific Microservice Locally
+make run MODULE=shipment-service
+
+# 6. Tear Down Infrastructure
 make down

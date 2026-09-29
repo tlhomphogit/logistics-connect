@@ -26,11 +26,11 @@ Build a microservices-based logistics tracking application fulfilling the System
 ### Phase 2: Synchronous REST Services (Shipment Service) (Current)
 
 - [X]  **TDD:** Write full server integration test asserting `HTTP 404` for non-existent endpoints using `TestRestTemplate`.
-- [ ]  Configure Spring Data JPA and Hibernate (`ddl-auto`) to manage the PostgreSQL schema automatically.
-- [ ]  Define the `Shipment` domain model (Java Entity) and verify guard clauses.
-- [ ]  Implement `POST /api/v1/shipments` to create shipping orders (JSON serialization).
-- [ ]  Implement `GET /api/v1/shipments/{id}` to retrieve order status.
-- [ ]  **Integration Test:** Verify database persistence and API JSON responses.
+- [X]  Configure Spring Data JPA and Hibernate (`ddl-auto`) to manage the PostgreSQL schema automatically.
+- [X]  Define the `Shipment` domain model (Java Entity) and verify guard clauses.
+- [X]  Implement `POST /api/v1/shipments` to create shipping orders (JSON serialization).
+- [X]  Implement `GET /api/v1/shipments/{id}` to retrieve order status.
+- [X]  **Integration Test:** Verify database persistence and API JSON responses.
 
 ### Phase 3: Asynchronous JMS Messaging (Tracking & Notification)
 

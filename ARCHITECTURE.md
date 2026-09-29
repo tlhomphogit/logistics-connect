@@ -24,15 +24,23 @@ LogisticsConnect/
     │   └── src/
     │       ├── main/java/com/logistics/shipment/
     │       │   ├── ShipmentApplication.java
-    │       │   ├── controller/     # REST Endpoints
-    │       │   ├── model/          # Domain Entities
-    │       │   ├── repository/     # Spring Data JPA Interfaces
-    │       │   └── service/        # Business Logic & Guard Clauses
+    │       │   ├── controller/     
+    │       │   │   ├── CreateShipmentRequest.java  # DTO for POST payloads
+    │       │   │   ├── GlobalExceptionHandler.java # Catches database constraint violations
+    │       │   │   └── ShipmentController.java     # REST Endpoints
+    │       │   ├── domain/                         # Domain Entities & Guard Clauses (formerly model)
+    │       │   │   └── Shipment.java
+    │       │   ├── repository/                     # Spring Data JPA Interfaces
+    │       │   │   └── ShipmentRepository.java
+    │       │   └── service/                        # Business Logic
     │       ├── main/resources/
-    │       │   └── application.yml # Database connection and server port configuration
+    │       │   └── application.properties          # PostgreSQL connection and Hibernate configuration
     │       └── test/java/com/logistics/shipment/
-    │           ├── controller/     # Unit and Integration tests for REST APIs
-    │           └── service/        # Unit tests verifying business logic and guard clauses
+    │           ├── ShipmentApplicationTests.java   # Spring Boot context load integration test
+    │           ├── controller/     
+    │           │   └── ShipmentControllerTest.java # API Integration tests with RestTestClient
+    │           └── domain/        
+    │               └── ShipmentTest.java           # Unit tests for domain guard clauses
     │
     ├── tracking-service/           # MICROSERVICE 2: High-Frequency Telemetry Ingestion
     │   ├── pom.xml                 
