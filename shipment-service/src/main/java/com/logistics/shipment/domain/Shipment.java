@@ -10,40 +10,51 @@ public class Shipment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "tracking_number", nullable = false, unique = true)
     private String trackingNumber;
 
-    @Column(nullable = false)
+    @Column(name = "origin", nullable = false)
     private String origin;
 
-    @Column(nullable = false)
+    @Column(name = "destination", nullable = false)
     private String destination;
 
-    @Column(nullable = false)
-    private double weight;
+    @Column(name = "weight", nullable = false)
+    private Double weight;
 
-    // A protected no-args constructor is strictly required by JPA for database mapping
+    @Column(name = "status", nullable = false)
+    private String status;
+
+    // Default constructor strictly required by JPA/Hibernate
     protected Shipment() {}
 
-    // The primary constructor containing our strict business rules (Guard Clauses)
-    public Shipment(String trackingNumber, String origin, String destination, double weight) {
-        if (weight <= 0) {
-            throw new IllegalArgumentException("Shipment weight must be greater than zero.");
-        }
+    // Business constructor enforcing domain rules
+    public Shipment(String trackingNumber, String origin, String destination, Double weight) {
         if (origin == null || origin.trim().isEmpty()) {
             throw new IllegalArgumentException("Origin cannot be null or blank.");
+        }
+        if (weight == null || weight <= 0) {
+            throw new IllegalArgumentException("Shipment weight must be greater than zero.");
+        }
+        if (trackingNumber == null || trackingNumber.trim().isEmpty()) {
+            throw new IllegalArgumentException("Tracking number cannot be null or blank.");
+        }
+        if (destination == null || destination.trim().isEmpty()) {
+            throw new IllegalArgumentException("Destination cannot be null or blank.");
         }
 
         this.trackingNumber = trackingNumber;
         this.origin = origin;
         this.destination = destination;
         this.weight = weight;
+        this.status = "PENDING";
     }
 
-    // Getters allowing the application to read the shipment data
+    // Getters required for JPA and JSON serialization
     public Long getId() { return id; }
     public String getTrackingNumber() { return trackingNumber; }
     public String getOrigin() { return origin; }
     public String getDestination() { return destination; }
-    public double getWeight() { return weight; }
+    public Double getWeight() { return weight; }
+    public String getStatus() { return status; }
 }

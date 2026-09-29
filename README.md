@@ -6,16 +6,33 @@ A robust, multi-module microservices application designed to handle logistics tr
 * **Language:** Java 26
 * **Framework:** Spring Boot 4.1.1
 * **Build Tool:** Maven (Wrapper included)
-* **Databases:** MySQL
+* **Databases:** PostgreSQL 18
 * **Message Broker:** Apache ActiveMQ Artemis
-* **Infrastructure:** Docker & Docker Compose
+* **Infrastructure:** Docker, Docker Compose, & Make
 
 ## Architecture Overview
 LogisticsConnect is built using a Test-Driven Development (TDD) approach and is divided into three core microservices:
 
-1. **Shipment Service (REST):** Manages standard CRUD operations for shipping orders and saves data to the `shipment_db`.
+1. **Shipment Service (REST):** Manages standard CRUD operations for shipping orders and saves data to the `logistics_db`.
 2. **Tracking Service (REST & JMS Producer):** Ingests high-frequency GPS telemetry from delivery trucks and immediately offloads it to an ActiveMQ queue to ensure high availability.
-3. **Notification Service (JMS Consumer):** Operates as a background worker, consuming telemetry messages from the queue, processing delay alerts, and storing them in the `notification_db`.
+3. **Notification Service (JMS Consumer):** Operates as a background worker, consuming telemetry messages from the queue, processing delay alerts, and storing them in the database.
 
 ## Local Development Setup
-*(Instructions for starting the Docker infrastructure and running the Maven modules will be added here as development progresses).*
+
+We use a central `Makefile` to simplify infrastructure and build commands. Ensure Docker Desktop is running before beginning.
+
+```bash
+# 1. Start the Infrastructure (PostgreSQL & ActiveMQ)
+make up
+
+# 2. Access the Database Interactively
+make psql
+
+# 3. Run the Global Test Suite
+make test
+
+# 4. Run Tests for a Specific Microservice
+make test MODULE=shipment-service
+
+# 5. Tear Down Infrastructure
+make down

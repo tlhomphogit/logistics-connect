@@ -9,7 +9,8 @@ This project utilizes a Maven multi-module architecture to manage three distinct
 LogisticsConnect/
 ├── .env                            # Secure environment variables (Excluded from version control)
 ├── .gitignore                      # Git ignore rules for IDE, env files, and compiled targets
-├── compose.yaml                    # Docker Compose configuration for MySQL and ActiveMQ
+├── compose.yaml                    # Docker Compose configuration for PostgreSQL and ActiveMQ
+├── Makefile                        # Centralized command runner for Docker and Maven
 ├── ROADMAP.md                      # Step-by-step project tracking and TDD rules
 ├── ARCHITECTURE.md                 # This file
 ├── pom.xml                         # Parent POM: Manages dependencies, sub-modules, and Java 26 config
