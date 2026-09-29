@@ -18,18 +18,20 @@ public class ShipmentController {
 
     @PostMapping
     public ResponseEntity<Shipment> createShipment(@RequestBody CreateShipmentRequest request) {
-        // 1. Construct the domain model (which enforces your guard clauses)
         Shipment shipment = new Shipment(
                 request.trackingNumber(),
                 request.origin(),
                 request.destination(),
                 request.weight()
         );
-
-        // 2. Persist the entity to PostgreSQL
         Shipment savedShipment = repository.save(shipment);
-
-        // 3. Return the saved entity with a 201 Created status
         return ResponseEntity.status(HttpStatus.CREATED).body(savedShipment);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Shipment> getShipmentById(@PathVariable Long id) {
+        return repository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

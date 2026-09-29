@@ -58,4 +58,29 @@ class ShipmentControllerTest {
         // Verify it was actually saved to PostgreSQL
         assertEquals(1, repository.count());
     }
+
+    @Test
+    void shouldGetShipmentByIdAndReturn200() {
+        // Arrange: Seed the database directly via the repository
+        Shipment shipmentToSave = new Shipment("TRK-GET-123", "Pretoria", "Durban", 200.0);
+        Shipment savedShipment = repository.save(shipmentToSave);
+        Long shipmentId = savedShipment.getId();
+
+        // Act: Fetch the shipment via the REST API
+        Shipment response = restClient.get()
+            .uri("/api/v1/shipments/" + shipmentId)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(Shipment.class)
+            .returnResult()
+            .getResponseBody();
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(shipmentId, response.getId());
+        assertEquals("TRK-GET-123", response.getTrackingNumber());
+        assertEquals("Pretoria", response.getOrigin());
+        assertEquals("Durban", response.getDestination());
+        assertEquals("PENDING", response.getStatus());
+    }
 }
