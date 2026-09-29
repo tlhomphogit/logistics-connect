@@ -22,6 +22,17 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      # Inject GitHub Secrets into the runner's environment safely
+      - name: Configure CI Environment Variables
+        run: |
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+
+      # Boot up the PostgreSQL database and wait for it to be healthy
+      - name: Start Database Infrastructure
+        run: make up
+
       - name: Grant execute permission for Maven Wrapper
         run: chmod +x mvnw
 
