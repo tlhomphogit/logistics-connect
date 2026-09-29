@@ -11,7 +11,7 @@ Build a microservices-based logistics tracking application fulfilling the System
 
 ---
 
-### Phase 1: Repository Setup & Secure Infrastructure (Current)
+### Phase 1: Repository Setup & Secure Infrastructure (Done)
 - [x] Set up the multi-module Spring Boot project structure in IntelliJ IDEA.
 - [x] Initialize Git repository and `ROADMAP.md`.
 - [x] Create `.gitignore` to exclude IDE files, compiled code, and `.env` files.
@@ -19,9 +19,9 @@ Build a microservices-based logistics tracking application fulfilling the System
 - [x] Create `docker-compose.yml` to set up the MySQL Database and ActiveMQ Artemis broker, injecting variables from `.env`.
 - [x] Configure the CI/CD pipeline file to run automated tests on push.
 
-### Phase 2: Synchronous REST Services (Shipment Service)
-- [ ] **TDD:** Write unit tests for Shipment domain models and guard clauses.
-- [ ] Configure Spring Data JPA to connect to the MySQL database securely using environment variables.
+### Phase 2: Synchronous REST Services (Shipment Service) (Current)
+- [x] **TDD:** Write unit tests for Shipment domain models and guard clauses.
+- [x] Configure Spring Data JPA to connect to the MySQL database securely using environment variables.
 - [ ] Implement `POST /api/v1/shipments` to create shipping orders (JSON serialization).
 - [ ] Implement `GET /api/v1/shipments/{id}` to retrieve order status.
 - [ ] **Integration Test:** Verify database persistence and API JSON responses using Spring Boot test slices.

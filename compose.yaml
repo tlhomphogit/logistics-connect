@@ -1,16 +1,20 @@
 services:
-  mysql:
-    image: 'mysql:8.4.11'
-    container_name: logistics-mysql
+  postgres:
+    image: 'postgres:18'
+    container_name: logistics-postgres
     ports:
-      - '3307:3306'
+      - '5433:5432'
     environment:
-      - 'MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}'
-      - 'MYSQL_DATABASE=${MYSQL_DATABASE}'
-      - 'MYSQL_USER=${MYSQL_USER}'
-      - 'MYSQL_PASSWORD=${MYSQL_PASSWORD}'
+      - 'POSTGRES_DB=${POSTGRES_DB}'
+      - 'POSTGRES_USER=${POSTGRES_USER}'
+      - 'POSTGRES_PASSWORD=${POSTGRES_PASSWORD}'
     volumes:
-      - mysql-data:/var/lib/mysql
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   artemis:
     image: 'apache/activemq-artemis:2.44.0'
@@ -23,4 +27,4 @@ services:
       - 'ARTEMIS_PASSWORD=admin'
 
 volumes:
-  mysql-data:
+  postgres-data:
