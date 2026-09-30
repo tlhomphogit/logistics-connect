@@ -1,14 +1,23 @@
 package com.logistics.shipment.controller;
 
+
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.annotation.DirtiesContext;
 import com.logistics.shipment.domain.Shipment;
+import com.logistics.shipment.domain.ShipmentStatus;
 import com.logistics.shipment.repository.ShipmentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.test.web.servlet.client.RestTestClient;
+import org.springframework.http.HttpStatus;
+
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +27,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureRestTestClient
+@Testcontainers
+@ActiveProfiles("test")
+@DirtiesContext
 class ShipmentControllerTest {
+
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18");
 
     @Autowired
     private RestTestClient restClient;
@@ -28,7 +44,6 @@ class ShipmentControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Ensure a clean database state before each test
         repository.deleteAll();
     }
 
@@ -54,7 +69,7 @@ class ShipmentControllerTest {
         // Assert
         assertNotNull(response);
         assertEquals("TRK-2026-X", response.getTrackingNumber());
-        assertEquals("PENDING", response.getStatus());
+        assertEquals(ShipmentStatus.PENDING, response.getStatus());
         
         // Verify it was actually saved to PostgreSQL
         assertEquals(1, repository.count());
@@ -82,7 +97,7 @@ class ShipmentControllerTest {
         assertEquals("TRK-GET-123", response.getTrackingNumber());
         assertEquals("Pretoria", response.getOrigin());
         assertEquals("Durban", response.getDestination());
-        assertEquals("PENDING", response.getStatus());
+        assertEquals(ShipmentStatus.PENDING, response.getStatus());
     }
 
     @Test

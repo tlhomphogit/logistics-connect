@@ -23,8 +23,8 @@ services:
       - '61616:61616' # JMS Port
       - '8161:8161'   # Web Console Port (for monitoring queues)
     environment:
-      - 'ARTEMIS_USER=admin'
-      - 'ARTEMIS_PASSWORD=admin'
+      - 'ARTEMIS_USER=${ARTEMIS_USER}'
+      - 'ARTEMIS_PASSWORD=${ARTEMIS_PASSWORD}'
 
 volumes:
   postgres-data:

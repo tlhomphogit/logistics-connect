@@ -23,7 +23,8 @@ public class Shipment {
     private Double weight;
 
     @Column(name = "status", nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ShipmentStatus status;
 
     // Default constructor strictly required by JPA/Hibernate
     protected Shipment() {}
@@ -47,7 +48,7 @@ public class Shipment {
         this.origin = origin;
         this.destination = destination;
         this.weight = weight;
-        this.status = "PENDING";
+        this.status = ShipmentStatus.PENDING;
     }
 
     // Getters required for JPA and JSON serialization
@@ -56,5 +57,5 @@ public class Shipment {
     public String getOrigin() { return origin; }
     public String getDestination() { return destination; }
     public Double getWeight() { return weight; }
-    public String getStatus() { return status; }
+    public ShipmentStatus getStatus() { return status; }
 }

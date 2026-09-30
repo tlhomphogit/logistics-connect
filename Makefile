@@ -1,11 +1,20 @@
-DB       = logistics_db
-USER     = logistics_user
-PASSWORD = logistics_secure_password
+# LogisticsConnect — command shortcuts
+
+# Load environment variables from .env file and export them to all sub-commands
+-include .env
+export
+
+# Map the .env variables to the Makefile targets
+DB       = $(POSTGRES_DB)
+USER     = $(POSTGRES_USER)
+PASSWORD = $(POSTGRES_PASSWORD)
 COMPOSE  = docker compose
 EXEC     = $(COMPOSE) exec -T postgres psql -U $(USER) -d $(DB)
 MVNW     = ./mvnw
 
 .PHONY: help up down destroy psql logs status test build run
+
+# ... (keep the rest of your targets exactly the same) ...
 
 help:            ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

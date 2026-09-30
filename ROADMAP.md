@@ -26,7 +26,7 @@ Build a microservices-based logistics tracking application fulfilling the System
 - [X]  Implement a root `Makefile` to orchestrate Docker containers and Maven build commands.
 - [X]  Configure the CI/CD pipeline file to spin up infrastructure and run automated tests securely.
 
-> 	Known gaps carried out of this phase (fixed in Phase 2.5): credentials are still duplicated in the Makefile, `application.properties` and `compose.yaml` (LC-006, LC-007), and `.env` was committed once before being untracked (LC-008).
+> Known gaps carried out of this phase (fixed in Phase 2.5): credentials are still duplicated in the Makefile, `application.properties` and `compose.yaml` (LC-006, LC-007), and `.env` was committed once before being untracked (LC-008).
 
 ### Phase 2: Synchronous REST Services (Shipment Service) (Functionally complete, hardening in Phase 2.5)
 
@@ -53,19 +53,19 @@ Goal: make the foundation trustworthy so Phase 3 builds on solid ground. Follow 
 **B. Shipment-service correctness (TDD)**
 
 - [X]  LC-001: Test that invalid input (blank origin/destination/tracking number, weight <= 0, missing fields) returns `HTTP 400` with a JSON error body. Then handle `IllegalArgumentException` in `GlobalExceptionHandler` (decide: domain guard clauses only, or add Bean Validation on `CreateShipmentRequest`).
-- [ ]  LC-002: Add integration tests for `GET` non-existent id -> 404, and duplicate tracking number -> 409.
-- [ ]  LC-005: Narrow the 409 handler so only unique-constraint violations report "already exists" (e.g. check `existsByTrackingNumber` first, or inspect the constraint name).
-- [ ]  LC-003: Introduce `ShipmentService` and move creation/lookup logic out of the controller.
-- [ ]  LC-004: Replace the `String status` with a `ShipmentStatus` enum (`PENDING` first; add later states as features need them).
+- [X]  LC-002: Add integration tests for `GET` non-existent id -> 404, and duplicate tracking number -> 409.
+- [X]  LC-005: Narrow the 409 handler so only unique-constraint violations report "already exists" (e.g. check `existsByTrackingNumber` first, or inspect the constraint name).
+- [X]  LC-003: Introduce `ShipmentService` and move creation/lookup logic out of the controller.
+- [X]  LC-004: Replace the `String status` with a `ShipmentStatus` enum (`PENDING` first; add later states as features need them).
 
 **C. Configuration, secrets & test isolation**
 
-- [ ]  LC-006: Make `.env` the single source of truth. Makefile loads it (`-include .env` + `export`), and `application.properties` reads credentials from environment variables without hardcoded password defaults.
-- [ ]  LC-009: Externalize datasource host/port/database name (currently hardcoded `localhost:5433/logistics_db`).
-- [ ]  LC-007: Drive Artemis credentials from `.env` (compose currently hardcodes `admin/admin`; the old roadmap referenced `ACTIVEMQ_PASSWORD` but nothing reads it).
-- [ ]  LC-008: Check whether the committed-then-removed `.env` ever held real secrets; if so, rotate them (and the GitHub Secrets).
-- [ ]  LC-016: Stop integration tests from running against the dev database (`deleteAll()` currently wipes local data). Use Testcontainers PostgreSQL (`@ServiceConnection`) or a dedicated test database/profile.
-- [ ]  LC-017: Split JPA settings by profile (`show-sql` and `ddl-auto=update` are dev-only; remove the redundant Hibernate dialect line).
+- [X]  LC-006: Make `.env` the single source of truth. Makefile loads it (`-include .env` + `export`), and `application.properties` reads credentials from environment variables without hardcoded password defaults.
+- [X]  LC-009: Externalize datasource host/port/database name (currently hardcoded `localhost:5433/logistics_db`).
+- [X]  LC-007: Drive Artemis credentials from `.env` (compose currently hardcodes `admin/admin`; the old roadmap referenced `ACTIVEMQ_PASSWORD` but nothing reads it).
+- [X]  LC-008: Check whether the committed-then-removed `.env` ever held real secrets; if so, rotate them (and the GitHub Secrets).
+- [X]  LC-016: Stop integration tests from running against the dev database (`deleteAll()` currently wipes local data). Use Testcontainers PostgreSQL (`@ServiceConnection`) or a dedicated test database/profile.
+- [X]  LC-017: Split JPA settings by profile (`show-sql` and `ddl-auto=update` are dev-only; remove the redundant Hibernate dialect line).
 
 **D. Build & CI**
 
