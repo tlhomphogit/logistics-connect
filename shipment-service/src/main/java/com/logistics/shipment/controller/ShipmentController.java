@@ -1,7 +1,7 @@
 package com.logistics.shipment.controller;
 
 import com.logistics.shipment.domain.Shipment;
-import com.logistics.shipment.repository.ShipmentRepository;
+import com.logistics.shipment.service.ShipmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/shipments")
 public class ShipmentController {
 
-    private final ShipmentRepository repository;
+    private final ShipmentService service;
 
-    public ShipmentController(ShipmentRepository repository) {
-        this.repository = repository;
+    public ShipmentController(ShipmentService service) {
+        this.service = service;
     }
 
     @PostMapping
@@ -24,13 +24,13 @@ public class ShipmentController {
                 request.destination(),
                 request.weight()
         );
-        Shipment savedShipment = repository.save(shipment);
+        Shipment savedShipment = service.createShipment(shipment);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedShipment);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Shipment> getShipmentById(@PathVariable Long id) {
-        return repository.findById(id)
+        return service.getShipmentById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

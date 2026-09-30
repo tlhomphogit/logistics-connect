@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.test.web.servlet.client.RestTestClient;
 
@@ -82,5 +83,78 @@ class ShipmentControllerTest {
         assertEquals("Pretoria", response.getOrigin());
         assertEquals("Durban", response.getDestination());
         assertEquals("PENDING", response.getStatus());
+    }
+
+    @Test
+    void shouldReturn400WhenOriginIsBlank() {
+        // Arrange: Missing/blank origin
+        Map<String, Object> requestPayload = new HashMap<>();
+        requestPayload.put("trackingNumber", "TRK-ERR-001");
+        requestPayload.put("origin", ""); 
+        requestPayload.put("destination", "Cape Town");
+        requestPayload.put("weight", 450.5);
+
+        // Act & Assert
+        restClient.post()
+            .uri("/api/v1/shipments")
+            .body(requestPayload)
+            .exchange()
+            .expectStatus().isBadRequest()
+            .expectBody()
+            .jsonPath("$.error").isEqualTo("Bad Request")
+            .jsonPath("$.message").isEqualTo("Origin cannot be null or blank.");
+    }
+
+    @Test
+    void shouldReturn400WhenWeightIsNegative() {
+        // Arrange: Negative weight
+        Map<String, Object> requestPayload = new HashMap<>();
+        requestPayload.put("trackingNumber", "TRK-ERR-002");
+        requestPayload.put("origin", "Benoni");
+        requestPayload.put("destination", "Cape Town");
+        requestPayload.put("weight", -10.0);
+
+        // Act & Assert
+        restClient.post()
+            .uri("/api/v1/shipments")
+            .body(requestPayload)
+            .exchange()
+            .expectStatus().isBadRequest()
+            .expectBody()
+            .jsonPath("$.error").isEqualTo("Bad Request")
+            .jsonPath("$.message").isEqualTo("Shipment weight must be greater than zero.");
+    }
+
+    @Test
+    void shouldReturn404WhenShipmentDoesNotExist() {
+        // Act & Assert: Request an ID that is virtually guaranteed not to exist
+        restClient.get()
+            .uri("/api/v1/shipments/99999")
+            .exchange()
+            .expectStatus().isNotFound();
+    }
+
+    @Test
+    void shouldReturn409WhenTrackingNumberAlreadyExists() {
+        // Arrange: Seed the database with a specific tracking number
+        Shipment existingShipment = new Shipment("TRK-DUP-999", "Benoni", "Cape Town", 150.0);
+        repository.save(existingShipment);
+
+        // Prepare a new POST request trying to reuse that exact tracking number
+        Map<String, Object> requestPayload = new HashMap<>();
+        requestPayload.put("trackingNumber", "TRK-DUP-999"); // Duplicate!
+        requestPayload.put("origin", "Pretoria");
+        requestPayload.put("destination", "Durban");
+        requestPayload.put("weight", 200.0);
+
+        // Act & Assert
+        restClient.post()
+            .uri("/api/v1/shipments")
+            .body(requestPayload)
+            .exchange()
+            .expectStatus().isEqualTo(HttpStatus.CONFLICT)
+            .expectBody()
+            .jsonPath("$.error").isEqualTo("Conflict")
+            .jsonPath("$.message").isEqualTo("A record with this unique identifier (e.g., tracking number) already exists.");
     }
 }

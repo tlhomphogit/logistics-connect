@@ -10,4 +10,6 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     // save(), findById(), findAll(), deleteById(), etc.
 
     // We can add custom queries here later if needed (e.g., findByTrackingNumber(String trackingNumber))
+
+    boolean existsByTrackingNumber(String trackingNumber);
 }
