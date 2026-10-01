@@ -69,10 +69,10 @@ Goal: make the foundation trustworthy so Phase 3 builds on solid ground. Follow 
 
 **D. Build & CI**
 
-- [ ]  LC-011: Verify and standardize the web starter name across modules (`spring-boot-starter-web` in shipment vs `spring-boot-starter-webmvc` in tracking) against the Spring Boot 4.1 docs.
-- [ ]  LC-012: Move shared dependencies (test starters, Testcontainers) into the parent POM's `dependencyManagement`, and add `spring-boot-starter-test` to tracking and notification.
-- [ ]  LC-013: Update `ci.yml`: wait for both containers, publish test reports on failure, and drop the `make up` dependency once tests use Testcontainers.
-- [ ]  Confirm `./mvnw clean test` passes locally and in CI after the changes above.
+- [X]  LC-011: Verify and standardize the web starter name across modules (`spring-boot-starter-web` in shipment vs `spring-boot-starter-webmvc` in tracking) against the Spring Boot 4.1 docs.
+- [X]  LC-012: Move shared dependencies (test starters, Testcontainers) into the parent POM's `dependencyManagement`, and add `spring-boot-starter-test` to tracking and notification.
+- [X]  LC-013: Update `ci.yml`: wait for both containers, publish test reports on failure, and drop the `make up` dependency once tests use Testcontainers.
+- [X]  Confirm `./mvnw clean test` passes locally and in CI after the changes above.
 
 **E. Phase 3 design decisions (write down before coding; proposed defaults in italics)**
 

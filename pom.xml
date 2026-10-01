@@ -20,6 +20,28 @@
         <java.version>26</java.version>
     </properties>
 
+    <!-- Centralized Dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- Spring Boot BOM (Manages all Spring versions) -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>4.1.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Testcontainers BOM (Manages all Testcontainers versions) -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>1.20.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <!-- Registering sub-modules -->
     <modules>
         <module>shipment-service</module>
