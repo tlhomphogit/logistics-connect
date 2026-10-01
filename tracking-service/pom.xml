@@ -13,6 +13,10 @@
     <artifactId>tracking-service</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-artemis</artifactId>
+        </dependency>
         <!-- For REST API endpoints to receive truck location updates -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

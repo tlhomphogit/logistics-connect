@@ -76,12 +76,12 @@ Goal: make the foundation trustworthy so Phase 3 builds on solid ground. Follow 
 
 **E. Phase 3 design decisions (write down before coding; proposed defaults in italics)**
 
-- [ ]  **Telemetry message contract (JSON):** *`truckId`, `trackingNumber`, `latitude`, `longitude`, `speedKmh`, `recordedAt` (ISO-8601 UTC).*
+- [X]  **Telemetry message contract (JSON):** *`truckId`, `trackingNumber`, `latitude`, `longitude`, `speedKmh`, `recordedAt` (ISO-8601 UTC).*
 - [ ]  **Queue names:** *`telemetry.queue` for GPS updates; a dead-letter/retry policy for poison messages.*
-- [ ]  **"Delay" rule:** define what counts as a delay alert. *e.g. no update from a truck for N minutes, or the truck is outside an expected route/ETA window.*
-- [ ]  **Notification datastore:** *PostgreSQL, its own database (or schema) `notification_db`, created via compose init script.* Update `.env`/`compose.yaml` accordingly.
-- [ ]  **Tracking -> Shipment link:** decide whether tracking-service validates `trackingNumber` against shipment-service (REST call) or trusts the payload. *Proposed: trust the payload for now to keep services decoupled.*
-- [ ]  **Ports:** *shipment 8080, tracking 8081, notification 8082.*
+- [X]  **"Delay" rule:** define what counts as a delay alert. *e.g. no update from a truck for N minutes, or the truck is outside an expected route/ETA window.*
+- [X]  **Notification datastore:** *PostgreSQL, its own database (or schema) `notification_db`, created via compose init script.* Update `.env`/`compose.yaml` accordingly.
+- [X]  **Tracking -> Shipment link:** decide whether tracking-service validates `trackingNumber` against shipment-service (REST call) or trusts the payload. *Proposed: trust the payload for now to keep services decoupled.*
+- [X]  **Ports:** *shipment 8080, tracking 8081, notification 8082.*
 
 ### Phase 3: Asynchronous JMS Messaging (Tracking & Notification)
 
