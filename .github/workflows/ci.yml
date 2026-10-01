@@ -22,17 +22,18 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Configure CI Environment Variables
-        run: |
-          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
-          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
-          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-
-      - name: Start Database Infrastructure
-        run: make up
-
       - name: Grant execute permission for Maven Wrapper
         run: chmod +x mvnw
 
       - name: Compile and Run Tests
+        # Testcontainers dynamically spins up the required PostgreSQL instance
         run: ./mvnw clean test
+
+      - name: Upload Surefire Test Reports
+        # This step only executes if the tests fail, providing diagnostic XMLs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: '**/target/surefire-reports/'
+          retention-days: 7
