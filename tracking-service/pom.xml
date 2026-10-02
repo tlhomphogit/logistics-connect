@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -11,26 +11,40 @@
     </parent>
 
     <artifactId>tracking-service</artifactId>
+    <packaging>jar</packaging>
+    <name>tracking-service</name>
+    <description>Telemetry Tracking Service</description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-artemis</artifactId>
-        </dependency>
-        <!-- For REST API endpoints to receive truck location updates -->
+        <!-- Provides REST controllers and Jackson (ObjectMapper) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        
+        <!-- Provides ActiveMQ Artemis integration -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-artemis</artifactId>
+        </dependency>
+
+        <!-- Required by Spring JMS MappingJackson2MessageConverter on this Boot 4 project -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.21.0</version>
+        </dependency>
+
+        <!-- Provides JUnit and Spring Boot test support -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- For producing messages to the JMS queue -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-artemis</artifactId>
+            <artifactId>spring-boot-resttestclient</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

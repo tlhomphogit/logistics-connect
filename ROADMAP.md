@@ -85,14 +85,14 @@ Goal: make the foundation trustworthy so Phase 3 builds on solid ground. Follow 
 
 ### Phase 3: Asynchronous JMS Messaging (Tracking & Notification)
 
-- [ ]  Add the missing Spring Boot application classes, `application.yml` files, and `src/test` trees for both services.
-- [ ]  **TDD:** Write the failing test for the tracking REST endpoint (valid payload -> 202/201, invalid -> 400).
-- [ ]  Configure ActiveMQ Artemis Producer in the **Tracking Service**.
-- [ ]  Implement REST endpoint to accept high-frequency delivery truck GPS telemetry.
-- [ ]  Configure ActiveMQ Artemis Consumer in the **Notification Service**.
-- [ ]  Implement background worker to evaluate delays and save alerts to the Notification Database (PostgreSQL).
-- [ ]  **Integration Test:** Verify message queuing and asynchronous consumption using Testcontainers (Artemis + PostgreSQL).
-- [ ]  Add a `Dockerfile` for each service as it becomes runnable.
+- [X]  Add the missing Spring Boot application classes, `application.yml` files, and `src/test` trees for both services.
+- [X]  **TDD:** Write the failing test for the tracking REST endpoint (valid payload -> 202/201, invalid -> 400).
+- [X]  Configure ActiveMQ Artemis Producer in the **Tracking Service**.
+- [X]  Implement REST endpoint to accept high-frequency delivery truck GPS telemetry.
+- [X]  Configure ActiveMQ Artemis Consumer in the **Notification Service**.
+- [X]  Implement background worker to evaluate delays and save alerts to the Notification Database (PostgreSQL).
+- [X]  **Integration Test:** Verify message queuing and asynchronous consumption using Testcontainers (Artemis + PostgreSQL).
+- [X]  Add a `Dockerfile` for each service as it becomes runnable.
 
 ### Phase 4: Finalization & Demonstration
 
