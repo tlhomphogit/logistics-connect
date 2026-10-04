@@ -77,7 +77,7 @@ Goal: make the foundation trustworthy so Phase 3 builds on solid ground. Follow 
 **E. Phase 3 design decisions (write down before coding; proposed defaults in italics)**
 
 - [X]  **Telemetry message contract (JSON):** *`truckId`, `trackingNumber`, `latitude`, `longitude`, `speedKmh`, `recordedAt` (ISO-8601 UTC).*
-- [ ]  **Queue names:** *`telemetry.queue` for GPS updates; a dead-letter/retry policy for poison messages.*
+- [X]  **Queue names:** *`telemetry.queue` for GPS updates; a dead-letter/retry policy for poison messages.*
 - [X]  **"Delay" rule:** define what counts as a delay alert. *e.g. no update from a truck for N minutes, or the truck is outside an expected route/ETA window.*
 - [X]  **Notification datastore:** *PostgreSQL, its own database (or schema) `notification_db`, created via compose init script.* Update `.env`/`compose.yaml` accordingly.
 - [X]  **Tracking -> Shipment link:** decide whether tracking-service validates `trackingNumber` against shipment-service (REST call) or trusts the payload. *Proposed: trust the payload for now to keep services decoupled.*
@@ -96,8 +96,8 @@ Goal: make the foundation trustworthy so Phase 3 builds on solid ground. Follow 
 
 ### Phase 4: Finalization & Demonstration
 
-- [ ]  Perform a full end-to-end system test (shipment created -> telemetry ingested -> alert stored).
-- [ ]  Optionally extend `compose.yaml` to run all three services, not just infrastructure.
+- [X]  Perform a full end-to-end system test (shipment created -> telemetry ingested -> alert stored).
+- [X]  Optionally extend `compose.yaml` to run all three services, not just infrastructure.
 - [ ]  Polish `README.md` and API documentation.
 - [ ]  Refresh `ARCHITECTURE.md` and `microservice-architecture.html` to match the final system; close out `KNOWN_ISSUES.md`.
 - [ ]  Record the 5-10 minute YouTube demo video.

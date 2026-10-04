@@ -1,25 +1,22 @@
 package com.logistics.shipment.controller;
 
-
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.annotation.DirtiesContext;
 import com.logistics.shipment.domain.Shipment;
 import com.logistics.shipment.domain.ShipmentStatus;
 import com.logistics.shipment.repository.ShipmentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
-import org.springframework.test.web.servlet.client.RestTestClient;
 import org.springframework.http.HttpStatus;
-
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.client.RestTestClient;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,11 +47,7 @@ class ShipmentControllerTest {
     @Test
     void shouldCreateShipmentAndReturn201() {
         // Arrange
-        Map<String, Object> requestPayload = new HashMap<>();
-        requestPayload.put("trackingNumber", "TRK-2026-X");
-        requestPayload.put("origin", "Benoni");
-        requestPayload.put("destination", "Cape Town");
-        requestPayload.put("weight", 450.5);
+        Map<String, Object> requestPayload = shipmentPayload("TRK-2026-X", "Benoni", "Cape Town", 450.5);
 
         // Act
         Shipment response = restClient.post()
@@ -103,11 +96,7 @@ class ShipmentControllerTest {
     @Test
     void shouldReturn400WhenOriginIsBlank() {
         // Arrange: Missing/blank origin
-        Map<String, Object> requestPayload = new HashMap<>();
-        requestPayload.put("trackingNumber", "TRK-ERR-001");
-        requestPayload.put("origin", ""); 
-        requestPayload.put("destination", "Cape Town");
-        requestPayload.put("weight", 450.5);
+        Map<String, Object> requestPayload = shipmentPayload("TRK-ERR-001", "", "Cape Town", 450.5);
 
         // Act & Assert
         restClient.post()
@@ -123,11 +112,7 @@ class ShipmentControllerTest {
     @Test
     void shouldReturn400WhenWeightIsNegative() {
         // Arrange: Negative weight
-        Map<String, Object> requestPayload = new HashMap<>();
-        requestPayload.put("trackingNumber", "TRK-ERR-002");
-        requestPayload.put("origin", "Benoni");
-        requestPayload.put("destination", "Cape Town");
-        requestPayload.put("weight", -10.0);
+        Map<String, Object> requestPayload = shipmentPayload("TRK-ERR-002", "Benoni", "Cape Town", -10.0);
 
         // Act & Assert
         restClient.post()
@@ -156,11 +141,7 @@ class ShipmentControllerTest {
         repository.save(existingShipment);
 
         // Prepare a new POST request trying to reuse that exact tracking number
-        Map<String, Object> requestPayload = new HashMap<>();
-        requestPayload.put("trackingNumber", "TRK-DUP-999"); // Duplicate!
-        requestPayload.put("origin", "Pretoria");
-        requestPayload.put("destination", "Durban");
-        requestPayload.put("weight", 200.0);
+        Map<String, Object> requestPayload = shipmentPayload("TRK-DUP-999", "Pretoria", "Durban", 200.0);
 
         // Act & Assert
         restClient.post()
@@ -171,5 +152,14 @@ class ShipmentControllerTest {
             .expectBody()
             .jsonPath("$.error").isEqualTo("Conflict")
             .jsonPath("$.message").isEqualTo("A record with this unique identifier (e.g., tracking number) already exists.");
+    }
+
+    private Map<String, Object> shipmentPayload(String trackingNumber, String origin, String destination, double weight) {
+        return Map.of(
+            "trackingNumber", trackingNumber,
+            "origin", origin,
+            "destination", destination,
+            "weight", weight
+        );
     }
 }

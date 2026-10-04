@@ -12,12 +12,10 @@ COMPOSE  = docker compose
 EXEC     = $(COMPOSE) exec -T postgres psql -U $(USER) -d $(DB)
 MVNW     = ./mvnw
 
-.PHONY: help up down destroy psql logs status test build run
-
-# ... (keep the rest of your targets exactly the same) ...
+.PHONY: help up down destroy psql logs status clean test build package run
 
 help:            ## Show this help
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 	 | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
 
 up:              ## Start Postgres (waits until it is ready)
@@ -42,6 +40,13 @@ status:          ## Show container status
 	$(COMPOSE) ps
 
 # Maven shortcuts for the logistics-connect project
+clean:           ## Clean the target directories globally or for a specific module
+ifdef MODULE
+	$(MVNW) clean -pl $(MODULE)
+else
+	$(MVNW) clean
+endif
+
 test:            ## Run tests globally or for a specific module (e.g., make test MODULE=shipment-service)
 ifdef MODULE
 	$(MVNW) clean test -pl $(MODULE)
@@ -49,11 +54,18 @@ else
 	$(MVNW) clean test
 endif
 
-build:           ## Build the project without running tests
+build:           ## Build and install the project without running tests
 ifdef MODULE
 	$(MVNW) clean install -DskipTests -pl $(MODULE)
 else
 	$(MVNW) clean install -DskipTests
+endif
+
+package:         ## Package the project into JARs without installing to local repo or running tests
+ifdef MODULE
+	$(MVNW) clean package -DskipTests -pl $(MODULE)
+else
+	$(MVNW) clean package -DskipTests
 endif
 
 run:             ## Run a specific Spring Boot microservice (e.g., make run MODULE=shipment-service)
