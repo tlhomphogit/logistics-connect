@@ -69,23 +69,36 @@ Service and infrastructure ports: shipment `8080`, tracking `8081`, notification
 
 Base path: `/api/v1/shipments` (default port 8080)
 
-**Create a shipment**
+Each service exposes a generated OpenAPI contract and Swagger UI:
 
-```bash
-curl -X POST http://localhost:8080/api/v1/shipments \
-  -H "Content-Type: application/json" \
-  -d '{"trackingNumber":"TRK-2026-X","origin":"Benoni","destination":"Cape Town","weight":450.5}'
+* Shipment service: `http://localhost:8080/swagger-ui/index.html` and `http://localhost:8080/v3/api-docs`
+* Tracking service: `http://localhost:8081/swagger-ui/index.html` and `http://localhost:8081/v3/api-docs`
+* Notification service: `http://localhost:8082/swagger-ui/index.html` and `http://localhost:8082/v3/api-docs`
+
+**Create a shipment in Postman**
+
+- Method: `POST`
+- URL: `http://localhost:8080/api/v1/shipments`
+- Headers: `Content-Type: application/json`
+- Body:
+
+```json
+{
+  "trackingNumber": "TRK-2026-X",
+  "origin": "Benoni",
+  "destination": "Cape Town",
+  "weight": 450.5
+}
 ```
 
 * `201 Created`: returns the shipment, including generated `id` and `status: "PENDING"`.
 * `409 Conflict`: a shipment with that tracking number already exists.
 * Invalid input (blank fields, weight <= 0) returns `400` with a JSON error body.
 
-**Get a shipment**
+**Get a shipment in Postman**
 
-```bash
-curl http://localhost:8080/api/v1/shipments/1
-```
+- Method: `GET`
+- URL: `http://localhost:8080/api/v1/shipments/1`
 
 * `200 OK`: returns the shipment.
 * `404 Not Found`: no shipment with that id.

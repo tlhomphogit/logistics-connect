@@ -2,6 +2,12 @@ package com.logistics.tracking.controller;
 
 import com.logistics.tracking.dto.TelemetryMessage;
 import com.logistics.tracking.producer.TelemetryProducer;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Telemetry", description = "Telemetry ingestion and dispatch endpoints.")
 public class TrackingController {
 
     private final TelemetryProducer producer;
@@ -18,8 +25,17 @@ public class TrackingController {
         this.producer = producer;
     }
 
+    @Operation(summary = "Accept telemetry", description = "Validates the payload and publishes it to the Artemis queue for downstream alerting.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "202", description = "Telemetry accepted and queued"),
+            @ApiResponse(responseCode = "400", description = "Telemetry payload validation failed")
+    })
     @PostMapping("/telemetry")
-    public ResponseEntity<Void> receiveTelemetry(@RequestBody TelemetryMessage telemetryMessage) {
+    public ResponseEntity<Void> receiveTelemetry(@io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Telemetry payload reported by a truck",
+            required = true,
+            content = @Content(schema = @Schema(implementation = TelemetryMessage.class)))
+            @RequestBody TelemetryMessage telemetryMessage) {
         if (telemetryMessage == null) {
             return ResponseEntity.badRequest().build();
         }
