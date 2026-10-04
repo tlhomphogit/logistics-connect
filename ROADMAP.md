@@ -98,8 +98,8 @@ Goal: make the foundation trustworthy so Phase 3 builds on solid ground. Follow 
 
 - [X]  Perform a full end-to-end system test (shipment created -> telemetry ingested -> alert stored).
 - [X]  Optionally extend `compose.yaml` to run all three services, not just infrastructure.
-- [ ]  Polish `README.md` and API documentation.
-- [ ]  Refresh `ARCHITECTURE.md` and `microservice-architecture.html` to match the final system; close out `KNOWN_ISSUES.md`.
+- [X]  Polish `README.md` and API documentation.
+- [X]  Refresh `ARCHITECTURE.md` and `microservice-architecture.html` to match the final system; close out `KNOWN_ISSUES.md`.
 - [ ]  Record the 5-10 minute YouTube demo video.
 - [ ]  Submit proof of work before the deadline.
 
