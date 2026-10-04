@@ -10,25 +10,30 @@ Findings from the pre-Phase-3 project audit. Each item has an ID (`LC-0xx`) that
 
 | ID | Area | Severity | Status | Summary |
 |----|------|----------|--------|---------|
-| LC-001 | Shipment API | High | Open | Invalid input returns HTTP 500 instead of 400 |
-| LC-002 | Testing | Medium | Open | No tests for 404, 409 or 400; roadmap claimed a 404 test |
-| LC-003 | Shipment design | Low | Planned | No service layer; controller calls the repository directly |
-| LC-004 | Shipment design | Low | Open | `status` is a free-form `String` |
-| LC-005 | Shipment API | Medium | Open | Every `DataIntegrityViolationException` is reported as "duplicate" (409) |
-| LC-006 | Config/Secrets | High | Open | Credentials duplicated; `.env` is not read by the app or Makefile |
-| LC-007 | Config/Secrets | Medium | Open | Artemis credentials hardcoded (`admin/admin`) |
+| LC-001 | Shipment API | High | Fixed | Invalid input returns HTTP 400 |
+| LC-002 | Testing | Medium | Fixed | Controller tests cover 404, 409 and 400 as well as success paths |
+| LC-003 | Shipment design | Low | Fixed | Shipment business logic is in `ShipmentService` |
+| LC-004 | Shipment design | Low | Fixed | Shipment status uses `ShipmentStatus` enum |
+| LC-005 | Shipment API | Medium | Fixed | Duplicate tracking number is checked before persistence |
+| LC-006 | Config/Secrets | High | Fixed | `.env` is loaded by Make; Compose passes credentials to apps |
+| LC-007 | Config/Secrets | Medium | Fixed | Artemis credentials come from `.env` in Compose |
 | LC-008 | Config/Secrets | Medium | Open | `.env` was committed once before being untracked |
-| LC-009 | Config | Medium | Open | Datasource host, port and DB name hardcoded |
+| LC-009 | Config | Medium | Fixed | Datasource host, port and DB name are configurable |
 | LC-010 | Build | Medium | Fixed | notification-service still depended on the MySQL driver |
-| LC-011 | Build | Medium | Open | Inconsistent web starter names between modules |
-| LC-012 | Build | Low | Open | Parent POM manages no shared dependencies; new modules lack test starters |
+| LC-011 | Build | Medium | Fixed | Web starter names are aligned |
+| LC-012 | Build | Low | Fixed | Test dependencies are present and dependency management is configured |
 | LC-013 | CI | Low | Open | CI only waits for Postgres and relies on the shared dev database setup |
 | LC-014 | Docs | Medium | Fixed | ARCHITECTURE/README/ROADMAP drifted from the code |
-| LC-015 | Infra | Low | Planned | No Dockerfiles yet; compose runs infrastructure only |
-| LC-016 | Testing | High | Open | Integration tests run against the dev database and call `deleteAll()` |
-| LC-017 | Config | Low | Open | Dev-only JPA settings applied everywhere |
+| LC-015 | Infra | Low | Fixed | Dockerfiles and app services are included in Compose |
+| LC-016 | Testing | High | Fixed | Shipment and notification integration tests use Testcontainers |
+| LC-017 | Config | Low | Fixed | Shipment JPA settings are profile-specific |
+| LC-018 | Compose | High | Fixed | Tracking and notification host ports now map to their configured container ports |
+| LC-019 | Messaging | High | Fixed | Tracking JMS JSON converter supports `Instant` telemetry timestamps |
+| LC-020 | E2E observability | Medium | Fixed | Notification exposes persisted delay alerts for smoke-test verification |
 
 ## Details
+
+The detail sections below preserve the original audit notes. Items marked Fixed in the summary have since been addressed; LC-008 remains open pending secret-history review, and LC-013 remains open for CI cleanup.
 
 ### LC-001: Invalid input returns 500, not 400
 `Shipment`'s constructor throws `IllegalArgumentException` for blank fields or a non-positive weight, and nothing handles it, so a bad `POST` surfaces as a server error. `null` fields (e.g. a missing JSON property) are also rejected this way.

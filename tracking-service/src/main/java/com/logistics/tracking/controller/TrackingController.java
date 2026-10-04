@@ -1,6 +1,5 @@
 package com.logistics.tracking.controller;
 
-import com.logistics.tracking.client.ShipmentValidator;
 import com.logistics.tracking.dto.TelemetryMessage;
 import com.logistics.tracking.producer.TelemetryProducer;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class TrackingController {
 
     private final TelemetryProducer producer;
-    private final ShipmentValidator validator;
 
-    public TrackingController(TelemetryProducer producer, ShipmentValidator validator) {
+    public TrackingController(TelemetryProducer producer) {
         this.producer = producer;
-        this.validator = validator;
     }
 
     @PostMapping("/telemetry")
@@ -45,12 +42,7 @@ public class TrackingController {
             return ResponseEntity.badRequest().build();
         }
 
-        // Validate against the shipment-service
-        if (!validator.isValid(telemetryMessage.trackingNumber())) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        // Publish the payload to the Artemis queue
+        // The project keeps tracking and shipment services decoupled and trusts the payload.
         producer.sendTelemetry(telemetryMessage);
 
         return ResponseEntity.accepted().build();

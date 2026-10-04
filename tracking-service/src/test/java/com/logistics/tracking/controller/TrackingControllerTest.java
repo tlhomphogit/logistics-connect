@@ -1,6 +1,5 @@
 package com.logistics.tracking.controller;
 
-import com.logistics.tracking.client.ShipmentValidator;
 import com.logistics.tracking.dto.TelemetryMessage;
 import com.logistics.tracking.producer.TelemetryProducer;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.springframework.test.web.servlet.client.RestTestClient;
 import java.time.Instant;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureRestTestClient
@@ -24,18 +22,11 @@ class TrackingControllerTest {
     @Autowired
     private RestTestClient restClient;
 
-    // The Spring Boot 4 standard replacement for the deprecated @MockBean
-    @MockitoBean
-    private ShipmentValidator validator;
-
     @MockitoBean
     private TelemetryProducer producer;
 
     @Test
     void shouldReturn202WhenValidTelemetryReceived() {
-        // Instruct the mocked validator to simulate a successful shipment lookup
-        when(validator.isValid("SHP-9999")).thenReturn(true);
-
         TelemetryMessage message = new TelemetryMessage(
                 "TRK-100",
                 "SHP-9999",

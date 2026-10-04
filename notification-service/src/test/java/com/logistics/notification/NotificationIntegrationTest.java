@@ -2,15 +2,19 @@ package com.logistics.notification;
 
 import com.logistics.notification.dto.TelemetryMessage;
 import com.logistics.notification.repository.DelayAlertRepository;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.web.servlet.client.RestTestClient;
 import org.springframework.jms.core.JmsTemplate;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -20,11 +24,16 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureRestTestClient
+@Testcontainers
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class NotificationIntegrationTest {
 
+    @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18");
 
+    @Container
     static GenericContainer<?> artemis = new GenericContainer<>("apache/activemq-artemis:latest-alpine")
             .withExposedPorts(61616)
             .withEnv("ARTEMIS_USER", "artemis")
@@ -33,9 +42,6 @@ class NotificationIntegrationTest {
 
     @DynamicPropertySource
     static void configureArtemis(DynamicPropertyRegistry registry) {
-        postgres.start();
-        artemis.start();
-
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
@@ -45,17 +51,14 @@ class NotificationIntegrationTest {
         registry.add("spring.artemis.password", () -> "artemis");
     }
 
-    @AfterAll
-    static void stopContainers() {
-        artemis.stop();
-        postgres.stop();
-    }
-
     @Autowired
     private JmsTemplate jmsTemplate;
 
     @Autowired
     private DelayAlertRepository alertRepository;
+
+    @Autowired
+    private RestTestClient restClient;
 
     @Test
     void shouldConsumeMessageAndSaveDelayAlert() {
@@ -71,5 +74,13 @@ class NotificationIntegrationTest {
         );
 
         assertThat(alertRepository.findAll().get(0).getTruckId()).isEqualTo("TRK-999");
+
+        restClient.get()
+            .uri("/api/v1/alerts")
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody()
+            .jsonPath("$[0].truckId").isEqualTo("TRK-999")
+            .jsonPath("$[0].trackingNumber").isEqualTo("SHP-1234");
     }
 }
